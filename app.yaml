@@ -1,0 +1,47 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+version: local-development
+
+skip_files:
+- ^(.*/)?#.*#$
+- ^(.*/)?.*~$
+- ^(.*/)?.*\.py[co]$
+- ^(.*/)?\..*$
+- requirements.txt
+- ^env/.*
+- ^pylibs/.*\.dist-info$
+
+inbound_services:
+- warmup
+
+handlers:
+- url: /
+  secure: always
+  static_files: static/index.html
+  upload: static/index.html
+  http_headers:
+    X-Content-Type-Options: nosniff
+    X-XSS-Protection: 1; mode=block
+
+- url: /(favicon\.ico|robots\.txt)$
+  secure: always
+  static_files: static/\1
+  upload: static/.*
+
+- url: /images/(.*\.(?:gif|png|jpg|jpeg))$
+  secure: always
+  static_files: static/images/\1
+  upload: static/images/.*\.(gif|png|jpg|jpeg)$
+
+libraries:
+# for the latest version of libraries check
+# https://cloud.google.com/appengine/docs/python/tools/built-in-libraries-27
+- name: webapp2
+  version: 2.5.2
+- name: pycrypto
+  version: 2.6
+- name: webob
+  version: 1.2.3
+- name: ssl
+  version: 2.7.11
